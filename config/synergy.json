@@ -1,0 +1,65 @@
+{
+  "shopId": "synergy",
+  "brand": {
+    "name": "시너지 아우토살롱",
+    "nameEn": "Synergy Auto Salon",
+    "region": "경기 이천/광주",
+    "address": "경기도 이천시 백사면 청백리로 847-59 3동",
+    "phone": "031-637-6154",
+    "web": "synergycar.co.kr",
+    "instagram": "@synergyautosalon",
+    "kakao": "pf.kakao.com/_gxoSAn"
+  },
+  "carModels": [
+    {"brand": "벤츠", "models": ["AMG GT55", "G580 G바겐", "CLE53", "CLE200 카브리올레", "AMG GT 55", "S클래스", "E클래스", "C클래스", "GLE", "GLS"]},
+    {"brand": "BMW", "models": ["i5", "i7", "iX", "M3", "M5", "X5", "X7", "7시리즈", "5시리즈", "3시리즈"]},
+    {"brand": "테슬라", "models": ["모델Y", "모델3", "모델S", "모델X", "사이버트럭"]},
+    {"brand": "캐딜락", "models": ["에스컬레이드", "CT6"]},
+    {"brand": "포르쉐", "models": ["카이엔", "마칸", "파나메라", "911", "타이칸"]},
+    {"brand": "아우디", "models": ["A6", "A7", "A8", "Q7", "Q8", "e-tron", "RS6"]},
+    {"brand": "렉서스", "models": ["LX600", "RX", "ES", "LS"]},
+    {"brand": "제네시스", "models": ["G80", "G90", "GV80", "GV70", "GV60"]},
+    {"brand": "직접입력", "models": []}
+  ],
+  "workTypes": [
+    "투명 전체 PPF",
+    "프론트 PPF",
+    "컬러 PPF",
+    "무광 전체 PPF",
+    "무광 부분 PPF",
+    "유광 전체 PPF",
+    "카 랩핑 (전체)",
+    "카 랩핑 (부분)",
+    "무광 랩핑",
+    "컬러 체인지 랩핑"
+  ],
+  "filmBrands": [
+    "STEK 다이노쉴드",
+    "STEK DYNOmatt",
+    "3M Pro Series",
+    "3M Scotchgard",
+    "XPEL Ultimate Plus",
+    "XPEL STEALTH",
+    "HEXIS",
+    "직접입력"
+  ],
+  "visitReasons": [
+    {"key": "recommendation", "label": "소문 듣고 방문"},
+    {"key": "comparison", "label": "여러 업체 비교 후 선택"},
+    {"key": "detailed", "label": "필름 종류·마감 꼼꼼히 확인한 케이스"},
+    {"key": "returning", "label": "재방문 단골 고객"},
+    {"key": "youtuber", "label": "유튜버 협업 시공"},
+    {"key": "newcar", "label": "신차 출고 직후 방문"},
+    {"key": "limited", "label": "한정판/희귀 모델"},
+    {"key": "damage", "label": "손상 복원 후 보호"}
+  ],
+  "hashtags": {
+    "base": ["시너지아우토살롱", "이천PPF", "이천랩핑", "경기광주PPF", "PPF전문점", "프리미엄랩핑"],
+    "perWorkType": {
+      "PPF": ["전체PPF", "PPF시공"],
+      "랩핑": ["전체랩핑", "차량랩핑", "카랩핑"],
+      "무광": ["무광PPF", "무광랩핑"],
+      "컬러": ["컬러체인지", "컬러PPF"]
+    }
+  }
+}
