@@ -138,11 +138,13 @@
   <div class="card" id="resultCard" style="display:none">
     <h2>✍️ 생성된 블로그 포스트</h2>
     <div class="toolbar">
-      <button class="secondary" id="copyTitle">📋 제목 복사</button>
-      <button class="secondary" id="copyBody">📋 본문 복사</button>
-      <button class="secondary" id="copyAll">📋 전체 복사</button>
-      <button class="secondary" id="downloadMd">💾 .md 다운로드</button>
-      <button class="secondary" id="regenerate">🔄 다시 생성</button>
+      <button class="primary" id="exportNaver" style="flex:2;min-width:200px;margin-top:0">🚀 네이버로 내보내기 (복사+ZIP+열기)</button>
+      <button class="secondary" id="copyTitle">📋 제목</button>
+      <button class="secondary" id="copyBody">📋 본문</button>
+      <button class="secondary" id="copyAll">📋 전체</button>
+      <button class="secondary" id="downloadZip">📦 사진 ZIP</button>
+      <button class="secondary" id="downloadMd">💾 .md</button>
+      <button class="secondary" id="regenerate">🔄 다시</button>
     </div>
     <div class="result-title" id="rTitle"></div>
     <div class="result" id="rBody"></div>
@@ -150,6 +152,7 @@
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

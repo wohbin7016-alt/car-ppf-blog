@@ -293,6 +293,48 @@ function setupActions() {
     a.click();
   });
   document.getElementById('regenerate').addEventListener('click', generate);
+  document.getElementById('downloadZip').addEventListener('click', downloadPhotosZip);
+  document.getElementById('exportNaver').addEventListener('click', exportToNaver);
+}
+
+function dataUrlToBlob(dataUrl) {
+  const [head, b64] = dataUrl.split(',');
+  const mime = head.match(/data:(.*?);/)[1];
+  const bin = atob(b64);
+  const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  return new Blob([arr], { type: mime });
+}
+
+async function downloadPhotosZip() {
+  const all = [...photos.before, ...photos.after];
+  if (!all.length) { alert('업로드된 사진이 없습니다.'); return; }
+  if (typeof JSZip === 'undefined') { alert('JSZip 로드 실패 — 새로고침 후 다시 시도하세요.'); return; }
+  const zip = new JSZip();
+  photos.before.forEach((ph, i) => {
+    zip.file(`01_before_${String(i+1).padStart(2,'0')}.jpg`, dataUrlToBlob(ph.dataUrl));
+  });
+  photos.after.forEach((ph, i) => {
+    zip.file(`02_after_${String(i+1).padStart(2,'0')}.jpg`, dataUrlToBlob(ph.dataUrl));
+  });
+  const blob = await zip.generateAsync({ type: 'blob' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `ppf-photos-${Date.now()}.zip`;
+  a.click();
+}
+
+async function exportToNaver() {
+  const r = window.__lastResult;
+  if (!r) { alert('먼저 글을 생성하세요.'); return; }
+  await navigator.clipboard.writeText(`${r.title}\n\n${r.body}\n\n${r.hashtags}`);
+  if (photos.before.length || photos.after.length) {
+    await downloadPhotosZip();
+  }
+  toastCopied();
+  setTimeout(() => {
+    window.open('https://blog.naver.com/GoBlogWrite.naver', '_blank');
+  }, 400);
 }
 
 function toastCopied() {
