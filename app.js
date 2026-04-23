@@ -4,7 +4,7 @@ const TEMPLATE_URL = 'templates/ppf-blog.md';
 let CONFIG = null;
 let EXAMPLES = null;
 let TEMPLATE = null;
-const photos = { before: [], after: [] };
+const photos = { before: [], during: [], after: [] };
 
 async function loadResources() {
   const [cfg, tpl, ex] = await Promise.all([
@@ -208,7 +208,7 @@ function buildInputJson() {
     filmBrand: document.getElementById('filmBrand').value,
     visitReasons,
     notes: document.getElementById('notes').value,
-    photoCount: { before: photos.before.length, after: photos.after.length }
+    photoCount: { before: photos.before.length, during: photos.during.length, after: photos.after.length }
   };
 }
 
@@ -307,15 +307,18 @@ function dataUrlToBlob(dataUrl) {
 }
 
 async function downloadPhotosZip() {
-  const all = [...photos.before, ...photos.after];
+  const all = [...photos.before, ...photos.during, ...photos.after];
   if (!all.length) { alert('업로드된 사진이 없습니다.'); return; }
   if (typeof JSZip === 'undefined') { alert('JSZip 로드 실패 — 새로고침 후 다시 시도하세요.'); return; }
   const zip = new JSZip();
   photos.before.forEach((ph, i) => {
     zip.file(`01_before_${String(i+1).padStart(2,'0')}.jpg`, dataUrlToBlob(ph.dataUrl));
   });
+  photos.during.forEach((ph, i) => {
+    zip.file(`02_during_${String(i+1).padStart(2,'0')}.jpg`, dataUrlToBlob(ph.dataUrl));
+  });
   photos.after.forEach((ph, i) => {
-    zip.file(`02_after_${String(i+1).padStart(2,'0')}.jpg`, dataUrlToBlob(ph.dataUrl));
+    zip.file(`03_after_${String(i+1).padStart(2,'0')}.jpg`, dataUrlToBlob(ph.dataUrl));
   });
   const blob = await zip.generateAsync({ type: 'blob' });
   const a = document.createElement('a');
@@ -328,7 +331,7 @@ async function exportToNaver() {
   const r = window.__lastResult;
   if (!r) { alert('먼저 글을 생성하세요.'); return; }
   await navigator.clipboard.writeText(`${r.title}\n\n${r.body}\n\n${r.hashtags}`);
-  if (photos.before.length || photos.after.length) {
+  if (photos.before.length || photos.during.length || photos.after.length) {
     await downloadPhotosZip();
   }
   toastCopied();
@@ -348,6 +351,7 @@ function toastCopied() {
 (async () => {
   await loadResources();
   setupPhotoZone('before');
+  setupPhotoZone('during');
   setupPhotoZone('after');
   initKeySave();
   setupActions();
