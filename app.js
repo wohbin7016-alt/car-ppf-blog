@@ -216,7 +216,7 @@ async function callGemini(apiKey, prompt) {
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
   const body = {
     contents: [{ parts: [{ text: prompt }] }],
-    generationConfig: { temperature: 0.85, maxOutputTokens: 8192, responseMimeType: 'application/json' }
+    generationConfig: { temperature: 0.85, maxOutputTokens: 32768, responseMimeType: 'application/json' }
   };
   const r = await fetch(endpoint, {
     method: 'POST',
@@ -225,9 +225,47 @@ async function callGemini(apiKey, prompt) {
   });
   if (!r.ok) throw new Error(`Gemini ${r.status}: ${await r.text()}`);
   const data = await r.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) throw new Error('Empty response');
-  return JSON.parse(text);
+  const cand = data.candidates?.[0];
+  const text = cand?.content?.parts?.[0]?.text;
+  const finish = cand?.finishReason;
+  if (!text) throw new Error(`Empty response (finishReason=${finish || 'unknown'})`);
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    const repaired = repairJson(text);
+    if (repaired) return repaired;
+    if (finish && finish !== 'STOP') {
+      throw new Error(`응답이 잘렸습니다 (${finish}). 사진/메모 줄이거나 다시 시도하세요.`);
+    }
+    throw new Error(`JSON 파싱 실패: ${e.message}`);
+  }
+}
+
+function repairJson(text) {
+  let t = text.trim();
+  const fence = t.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+  if (fence) t = fence[1].trim();
+  try { return JSON.parse(t); } catch (_) {}
+  const start = t.indexOf('{');
+  if (start < 0) return null;
+  let depth = 0, inStr = false, esc = false, lastGood = -1;
+  for (let i = start; i < t.length; i++) {
+    const c = t[i];
+    if (esc) { esc = false; continue; }
+    if (c === '\\') { esc = true; continue; }
+    if (c === '"') { inStr = !inStr; continue; }
+    if (inStr) continue;
+    if (c === '{') depth++;
+    else if (c === '}') { depth--; if (depth === 0) { lastGood = i; break; } }
+  }
+  if (lastGood > 0) {
+    try { return JSON.parse(t.slice(start, lastGood + 1)); } catch (_) {}
+  }
+  if (inStr) {
+    const truncated = t.slice(start) + '"}';
+    try { return JSON.parse(truncated); } catch (_) {}
+  }
+  return null;
 }
 
 async function generate() {
